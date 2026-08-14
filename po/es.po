@@ -1,0 +1,9 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: desktop-in-switcher\n"
+"Language: es\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Desktop"
+msgstr "Escritorio"
