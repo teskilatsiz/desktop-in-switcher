@@ -1,5 +1,4 @@
-
-# extension package archives are versioned releases
+*.zip
 
 *.tar.gz
 
