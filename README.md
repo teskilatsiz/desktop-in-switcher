@@ -15,7 +15,7 @@ Desktop in Switcher adds a desktop entry to the GNOME Shell Alt-Tab window switc
 
 ## Requirements
 
-- GNOME Shell 50
+- GNOME Shell 45, 46, 47, 48, 49, or 50
 - gettext, for compiling translation files during installation
 
 ## Install
@@ -41,9 +41,9 @@ gnome-extensions enable desktop-in-switcher@teskilatsiz
 ## Project Structure
 
 ```text
-extension.js              Extension source
+extension.js              Extension source (GNOME 45–50 ESM compatible)
 metadata.json             GNOME Shell extension metadata
-install.sh                Local per-user installer
+install.sh                Local per-user installer with version checks
 uninstall.sh              Local uninstaller
 po/                       Translation sources
 update-translations.sh    Translation refresh helper

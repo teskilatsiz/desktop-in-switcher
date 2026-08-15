@@ -42,10 +42,22 @@ class DesktopItem extends St.BoxLayout {
 
 export default class DesktopInSwitcherExtension extends Extension {
     enable() {
+        const popupPrototype = AltTab.WindowSwitcherPopup?.prototype;
+
+        if (
+            !popupPrototype ||
+            typeof popupPrototype._init !== 'function' ||
+            typeof popupPrototype._finish !== 'function'
+        ) {
+            throw new Error(
+                'This GNOME Shell version has an unsupported Alt-Tab implementation.'
+            );
+        }
+
         this._injectionManager = new InjectionManager();
 
         this._injectionManager.overrideMethod(
-            AltTab.WindowSwitcherPopup.prototype,
+            popupPrototype,
             '_init',
             originalMethod => {
                 return function (...args) {
@@ -65,7 +77,7 @@ export default class DesktopInSwitcherExtension extends Extension {
         );
 
         this._injectionManager.overrideMethod(
-            AltTab.WindowSwitcherPopup.prototype,
+            popupPrototype,
             '_finish',
             originalMethod => {
                 return function (timestamp) {

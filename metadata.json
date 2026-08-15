@@ -2,7 +2,7 @@
   "uuid": "desktop-in-switcher@teskilatsiz",
   "name": "Desktop in Switcher",
   "description": "Adds the desktop to the GNOME Alt-Tab window switcher.",
-  "shell-version": ["50"],
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
   "gettext-domain": "desktop-in-switcher@teskilatsiz",
   "url": "https://github.com/teskilatsiz/desktop-in-switcher"
 }
