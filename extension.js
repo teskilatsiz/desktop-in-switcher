@@ -11,6 +11,8 @@ import {
 import * as AltTab from 'resource:///org/gnome/shell/ui/altTab.js';
 import * as SwitcherPopup from 'resource:///org/gnome/shell/ui/switcherPopup.js';
 
+const DESKTOP_ICON_SIZE = 64;
+
 const DesktopItem = GObject.registerClass(
 class DesktopItem extends St.BoxLayout {
     _init(labelText) {
@@ -21,12 +23,11 @@ class DesktopItem extends St.BoxLayout {
             style: 'padding: 12px;',
         });
 
-        this.isDesktopItem = true;
         this.window = null;
 
         const icon = new St.Icon({
             icon_name: 'user-desktop-symbolic',
-            icon_size: 64,
+            icon_size: DESKTOP_ICON_SIZE,
             x_align: Clutter.ActorAlign.CENTER,
         });
 
@@ -40,19 +41,29 @@ class DesktopItem extends St.BoxLayout {
     }
 });
 
+function addDesktopItem(switcherList) {
+    const desktopItem = new DesktopItem(_('Desktop'));
+
+    switcherList.addItem(desktopItem, desktopItem.label);
+    switcherList.icons.push(desktopItem);
+
+    return switcherList.icons;
+}
+
+function minimizeActiveWorkspace() {
+    const workspace = global.workspace_manager.get_active_workspace();
+
+    for (const window of workspace.list_windows()) {
+        if (window.skip_taskbar || window.minimized)
+            continue;
+
+        window.minimize();
+    }
+}
+
 export default class DesktopInSwitcherExtension extends Extension {
     enable() {
-        const popupPrototype = AltTab.WindowSwitcherPopup?.prototype;
-
-        if (
-            !popupPrototype ||
-            typeof popupPrototype._init !== 'function' ||
-            typeof popupPrototype._finish !== 'function'
-        ) {
-            throw new Error(
-                'This GNOME Shell version has an unsupported Alt-Tab implementation.'
-            );
-        }
+        const popupPrototype = AltTab.WindowSwitcherPopup.prototype;
 
         this._injectionManager = new InjectionManager();
 
@@ -63,15 +74,7 @@ export default class DesktopInSwitcherExtension extends Extension {
                 return function (...args) {
                     originalMethod.call(this, ...args);
 
-                    const desktopItem = new DesktopItem(_('Desktop'));
-
-                    this._switcherList.addItem(
-                        desktopItem,
-                        desktopItem.label
-                    );
-
-                    this._switcherList.icons.push(desktopItem);
-                    this._items = this._switcherList.icons;
+                    this._items = addDesktopItem(this._switcherList);
                 };
             }
         );
@@ -81,17 +84,10 @@ export default class DesktopInSwitcherExtension extends Extension {
             '_finish',
             originalMethod => {
                 return function (timestamp) {
-                    const item = this._items?.[this._selectedIndex];
+                    const item = this._items[this._selectedIndex];
 
-                    if (item?.isDesktopItem) {
-                        const workspace =
-                            global.workspace_manager.get_active_workspace();
-
-                        for (const window of workspace.list_windows()) {
-                            if (!window.skip_taskbar && !window.minimized)
-                                window.minimize();
-                        }
-
+                    if (item instanceof DesktopItem) {
+                        minimizeActiveWorkspace();
                         SwitcherPopup.SwitcherPopup.prototype._finish.call(
                             this,
                             timestamp
@@ -107,7 +103,7 @@ export default class DesktopInSwitcherExtension extends Extension {
     }
 
     disable() {
-        this._injectionManager?.clear();
+        this._injectionManager.clear();
         this._injectionManager = null;
     }
 }

@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 UUID="desktop-in-switcher@teskilatsiz"
 DOMAIN="$UUID"
 

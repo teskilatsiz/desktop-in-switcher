@@ -9,8 +9,7 @@ Desktop in Switcher adds a desktop entry to the GNOME Shell Alt-Tab window switc
 ## Features
 
 - Adds a desktop entry to the Alt+Tab switcher
-- Uses the GNOME Shell Alt-Tab popup injection flow
-- Provides a clean compatibility guard for supported Shell versions
+- Targets GNOME Shell 45-50 with the modern ESM extension format
 - Uses GNOME gettext so labels follow the system language
 - Keeps translations in locale files instead of hardcoding UI text
 - Includes translations for German, Spanish, French, Italian, Portuguese, Russian, and Turkish
@@ -26,7 +25,7 @@ This project targets the modern GNOME Shell ESM line:
 - GNOME Shell 49
 - GNOME Shell 50
 
-GNOME Shell 44 and older are not supported in this branch. GNOME 45 was the ESM migration point, so the extension uses the modern module-based extension format and intentionally rejects unsupported Alt-Tab APIs instead of running on incompatible Shell versions.
+GNOME Shell 44 and older are not supported in this branch. GNOME 45 was the ESM migration point, so this branch uses the modern module-based extension format and only declares support for tested stable Shell versions.
 
 ## Requirements
 
@@ -57,9 +56,25 @@ gnome-extensions enable desktop-in-switcher@teskilatsiz
 
 ## Compatibility Notes
 
-This extension uses the modern GNOME extension API for Shell 45+ and checks the `AltTab.WindowSwitcherPopup` implementation before injecting into the popup lifecycle.
+This extension uses the modern GNOME extension API for Shell 45+ and supports the stable GNOME Shell releases listed in `metadata.json`.
 
-If a future Shell version changes the internal Alt-Tab structure in a way that is not supported by this extension, the module fails explicitly instead of silently breaking the desktop switcher flow.
+GNOME Shell 44 and older require the legacy extension format, so they are intentionally not listed. Future Shell versions should be tested before being added to `shell-version`.
+
+## GNOME Extensions Package
+
+Build the review package with:
+
+```bash
+gnome-extensions pack . --force --podir=po --gettext-domain=desktop-in-switcher@teskilatsiz
+```
+
+The generated package is intentionally minimal for extensions.gnome.org review. It contains:
+
+- `extension.js`
+- `metadata.json`
+- compiled `locale/*.mo` translation files
+
+Repository-only files such as `assets/`, `po/*.po`, `po/*.pot`, `install.sh`, `uninstall.sh`, and `update-translations.sh` are not included in the review ZIP.
 
 ## Project Structure
 
