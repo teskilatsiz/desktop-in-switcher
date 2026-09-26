@@ -1,0 +1,8 @@
+{
+  "uuid": "desktop-in-switcher@teskilatsiz",
+  "name": "Desktop in Switcher",
+  "description": "Adds a Desktop entry to GNOME's application and window switchers.",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
+  "gettext-domain": "desktop-in-switcher@teskilatsiz",
+  "url": "https://github.com/teskilatsiz/desktop-in-switcher"
+}
